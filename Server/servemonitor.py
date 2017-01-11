@@ -11,6 +11,8 @@ HOST =socket.gethostbyname(socket.gethostname())
 
 PORT =input ("Enter the PORT number (1 - 10,000)")
 
+CLIENT_IP=None
+CLIENT_PORT=None
 
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,11 +25,15 @@ s.listen(100)
 print("Waiting for a connection....")
 
 def decrypt_data(data):
-    f = open("mydata.txt",'w')
+    f = open("mydata.txt",'a+')
     if data:
         print("Decrypting the information")
         decrypted_data = decrypt('cristian', data).decode('utf-8')
         print(decrypted_data)
+	aditional_info="\n" +"CLIENT_IP: " + CLIENT_IP + " " + "CLIENT_PORT: " + 
+CLIENT_PORT 
++ " 
+"	aditional_info +=decrypted_data
         f.write(decrypted_data)
         f.close()
         return(decrypted_data)
@@ -40,7 +46,7 @@ def threded_clinet(conn):
     conn.send(str.encode("Data received by the server!\n"))
     data = conn.recv(1024)
 
-    start_new_thread(decrypted_data, (data,))
+    start_new_thread(decrypt_data, (data,))
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
@@ -52,5 +58,6 @@ def threded_clinet(conn):
 while True:
     conn ,addr = s.accept()
     print("Connected to :"+  addr[0] + ":" + str(addr[1]))
+    CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
 
     start_new_thread(threded_clinet, (conn,))
