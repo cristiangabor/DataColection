@@ -24,12 +24,12 @@ print("Waiting for a connection....")
 
 def decrypt_data(data):
     if data:
-	print("Decrypting the information")
-	decrypted_data = decrypt('cristian', data).decode('utf-8')
-	return(decrypted_data)
+	    print("Decrypting the information")
+	    decrypted_data = decrypt('cristian', data).decode('utf-8')
+	    return(decrypted_data)
     else:
-	print("There is no data to decrypt")
-   	
+	    print("There is no data to decrypt")
+
 
 
 def threded_clinet(conn):
