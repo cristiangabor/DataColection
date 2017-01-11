@@ -30,10 +30,8 @@ def decrypt_data(data):
         print("Decrypting the information")
         decrypted_data = decrypt('cristian', data).decode('utf-8')
         print(decrypted_data)
-	aditional_info="\n" +"CLIENT_IP: " + CLIENT_IP + " " + "CLIENT_PORT: " + 
-CLIENT_PORT 
-+ " 
-"	aditional_info +=decrypted_data
+        aditional_info="\n" +"CLIENT_IP: " + CLIENT_IP + " " + "CLIENT_PORT: " + CLIENT_PORT + " "
+        aditional_info +=decrypted_data
         f.write(decrypted_data)
         f.close()
         return(decrypted_data)
