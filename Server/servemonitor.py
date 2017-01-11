@@ -24,12 +24,13 @@ except socket.error as msg:
 s.listen(100)
 print("Waiting for a connection....")
 
-def decrypt_data(data):
+def decrypt_data(data, CLIENT_IP, CLIENT_PORT):
     f = open("mydata.txt",'a+')
     if data:
         print("Decrypting the information")
         decrypted_data = decrypt('cristian', data).decode('utf-8')
         print(decrypted_data)
+        CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
         f.write(str(adtional_info))
@@ -40,11 +41,11 @@ def decrypt_data(data):
 
 
 
-def threded_clinet(conn):
+def threded_clinet(conn,addr):
     conn.send(str.encode("Data received by the server!\n"))
     data = conn.recv(1024)
 
-    start_new_thread(decrypt_data, (data,))
+    start_new_thread(decrypt_data, (data,addr,))
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
@@ -56,6 +57,5 @@ def threded_clinet(conn):
 while True:
     conn ,addr = s.accept()
     print("Connected to :"+  addr[0] + ":" + str(addr[1]))
-    CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
 
-    start_new_thread(threded_clinet, (conn,))
+    start_new_thread(threded_clinet, (conn,addr,))
