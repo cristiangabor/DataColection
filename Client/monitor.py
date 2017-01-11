@@ -16,7 +16,7 @@ print("Socket created...")
 
 # PASSWORD
 
-PASSWORD = "cristian"
+PASSWORD = "cris"
 
 # ARGUMENTS FOR SENDING DATA BACK
 
