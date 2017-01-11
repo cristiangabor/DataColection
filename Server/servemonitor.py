@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 
 
-def decrypt_data(data, CLIENT_IP, CLIENT_PORT):
+def decrypt_data(data, addr):
     f = open("mydata.txt",'a+')
     if data:
         print("Decrypting the information")
