@@ -1,19 +1,32 @@
 #!/usr/bin/python
 
 import sys
+import socket
 import psutil
 import platform
 from uptime import uptime
 from simplecrypt import encrypt
 
+# GET CLIENT HOSTNAME
+HOSTNAME = socket.gethostname()
+# CLIENT SOCKET
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("Socket created...")
 
 # PASSWORD
 
 PASSWORD = "cristian"
 
-# for ip purpouse
-print("Number of arguments:", len(sys.argv), "arguments.")
-print("Argument List:", str(sys.argv))
+# ARGUMENTS FOR SENDING DATA BACK
+
+if len(sys.argv) < 3:
+	print("Not enough arguments!")
+	sys.exit()
+else:
+	HOST_IP=str(sys.argv[1])
+	PORT = int(sys.argv[2])
+	print(HOSTNAME," ",HOST_IP,":",PORT)
 
 # Memory usage
 
@@ -51,36 +64,59 @@ else:
 
 
 def transform_data(memory,cpu,uptime,logs=None):
-	encrypted_text = ''
+	data_transformed = ''
 	keys_list=memory.keys()
 	length = len(memory)
 
 
 	for i in keys_list:
-		encrypted_text += str(i) + " " + str(memory.get(i)) + " "
+		data_transformed += str(i) + " " + str(memory.get(i)) + " "
 
 
-	encrypted_text += " " + "CPU"
+	data_transformed += " " + "CPU"
 
 	for i in cpu:
-		encrypted_text += " " + str(i)
+		data_transformed += " " + str(i)
 
-	encrypted_text += " " + "UPTIME" + " " + str(UPTIME)
+	data_transformed += " " + "UPTIME" + " " + str(UPTIME)
 
 	if logs:
-		encrypted_text +=" " + "LOGS" + " "
+		data_transformed +=" " + "LOGS" + " "
 		for i in logs:
-			encrypted_text += i + " "
+			data_transformed += i + " "
 
-	return(encrypted_text)
+	return(data_transformed)
 
 def encrypt_data(password, message):
 
 	ciphertext =encrypt(password, message)
-
-	print("SUCCES!")
 	return(ciphertext)
 
 
-MESSAGE=transform_data(MEMORY, CPU, UPTIME, logs=LOGS)
-encrypt_data(PASSWORD,MESSAGE)
+def make_connection(host, port):
+	# Enstablish the connection to the central server
+
+	client_socket.connect((host,port))
+
+def send_encrypted_data(data):
+
+
+	client_socket.sendall(data)
+	reply = client_socket.recv(1024)
+	reply = reply.decode('utf-8')
+	print(reply)
+
+
+def main():
+	data=transform_data(MEMORY, CPU, UPTIME, logs=LOGS)
+	if data: # Check to see if the data exists
+		make_connection(HOST_IP,PORT)   # Enstablish the connection with the main server
+		data_encrypted=encrypt_data(PASSWORD,data)  # Encrypt the data
+		if data_encrypted:
+			send_encrypted_data(data_encrypted)  # Send the encrpyted data over TCP
+		else:
+			print("Data not sent!")
+	else:
+		print("There is no data!")
+
+main()
