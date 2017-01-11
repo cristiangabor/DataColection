@@ -17,9 +17,11 @@ except socket.error as msg:
 
 s.listen(100)
 print("Waiting for a connection....")
+
 def threded_clinet(conn):
     conn.send(str.encode("Welcome user!\n"))
-    data = conn.recv(2048)
+    data = conn.recv(20)
+    print(data)
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
@@ -32,4 +34,4 @@ while True:
     conn ,addr = s.accept()
     print("Connected to :" + addr[0] + ":" + str(addr[1]))
 
-    start_new_thread(threded_clinet, (conn,))
+    #start_new_thread(threded_clinet, (conn,))
