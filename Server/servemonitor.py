@@ -26,7 +26,7 @@ def decrypt_data(data):
     f = open("mydata.txt",'w')
     if data:
 	    print("Decrypting the information")
-	    decrypted_data = decrypt('cristian', data).decode('utf-8')
+        decrypted_data = decrypt('cristian', data).decode('utf-8')
         print(decrypted_data)
         f.write(decrypted_data)
         f.close()
