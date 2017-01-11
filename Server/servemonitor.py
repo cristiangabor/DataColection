@@ -1,6 +1,7 @@
 import socket
 import sys
 from _thread import *
+from simplecrypt import decrypt
 
 # 1.Gets the local ip/ip over LAN.
 HOST =socket.gethostbyname(socket.gethostname())
@@ -21,7 +22,8 @@ print("Waiting for a connection....")
 def threded_clinet(conn):
     conn.send(str.encode("Welcome user!\n"))
     data = conn.recv(20)
-    print(data)
+    decrpted_data = decrypt('cristian', data)
+    print(decrpted_data)
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
