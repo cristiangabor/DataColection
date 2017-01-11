@@ -23,10 +23,14 @@ s.listen(100)
 print("Waiting for a connection....")
 
 def decrypt_data(data):
+    f = open("mydata.txt",'w')
     if data:
 	    print("Decrypting the information")
 	    decrypted_data = decrypt('cristian', data).decode('utf-8')
-	    return(decrypted_data)
+        print(decrypted_data)
+        f.write(decrypted_data)
+        f.close()
+        return(decrypted_data)
     else:
 	    print("There is no data to decrypt")
 
@@ -35,7 +39,8 @@ def decrypt_data(data):
 def threded_clinet(conn):
     conn.send(str.encode("Data received by the server!\n"))
     data = conn.recv(1024)
-    decrypt_data(data)
+
+    start_new_thread(decrypted_data, (data,))
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
