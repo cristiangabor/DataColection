@@ -41,9 +41,13 @@ def parsing(filepath):
     tree = ET.parse(filepath)
     root = tree.getroot()
     print(root)
-
+    return(root)
 
 def main():
+    filename="data.xml"
+
+    file=parsing(filename)
+    
     # 1.Gets the local ip/ip over LAN.
 
     HOST =socket.gethostbyname(socket.gethostname())
@@ -52,8 +56,6 @@ def main():
 
     PORT =input ("Enter the PORT number (1 - 10,000)")
 
-    CLIENT_IP=None
-    CLIENT_PORT=None
 
     s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
