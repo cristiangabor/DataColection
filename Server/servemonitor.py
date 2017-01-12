@@ -12,6 +12,7 @@ from subprocess import call  # for executing the python client script
 
 
 def decrypt_data(data, addr):
+
     f = open("mydata.txt",'a+')
     if data:
         print("Decrypting the information")
@@ -74,14 +75,15 @@ def parsing( HOST, PORT):
             port=child_attributes.get("port")
             password=child_attributes.get("password")
             user_mail=child_attributes.get("mail")
-            print(user_name,ip,port,password,user_mail)
             number_of_alerts=len(child)
 
             # Connect to the client through ssh
 
             cinfo = {'host':ip, 'username':user_name, 'password':password, 'port':int(port) } # dict configuration for pyftp
-
+            cnopts = pysftp.CnOpts()
+            cnopts.hostkeys = None
             try:
+
                 with pysftp.Connection(**cinfo) as sftp:
 
                     # Check to see if there is a temp directory already
@@ -90,14 +92,31 @@ def parsing( HOST, PORT):
                     if not "temp" in main_directory:
                         sftp.mkdir('temp', mode=777) # Create directory
                         sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
+                        try:
+                            err=sftp.excute("python asa.py")
+                            for i in err:
+                                print(i)
+                        except Exception:
+                            print("La dracu!")
                     else:
                         sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
+                        try:
+                            ad=sftp.execute("python monitor.py")
+                            for i in ad:
+                                print(i)
+                        except Exception:
+                            print("La dracu!")
+                            print("La dracu!")
+
 
                 try: # Execute the script with paramiko
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     ssh.connect(ip, username=user_name, password=password)
-                    command="python temp/monitor.py" + " " + HOST + " " + PORT
+                    command="python monitor.py" + " " + HOST + " " + PORT
+                    print("Executing the external script!")
                     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(command, get_pty=True)
+                    for line in ssh_stdout.read().splitlines():
+                        print(line)
                 except Exception:
                     print("Could not execute the script")
 
@@ -133,8 +152,8 @@ def main():
 
     # 1.Gets the local ip/ip over LAN.
 
-    HOST =socket.gethostbyname(socket.gethostname())
-
+    #HOST =socket.gethostbyname(socket.gethostname())
+    HOST="192.168.0.102"
     # 2.Use port no. above 1800 so it does not interfere with ports already in use.
 
     PORT =input ("Enter the PORT number (1 - 10,000)")
@@ -150,7 +169,8 @@ def main():
     s.listen(100)
     print("Waiting for a connection....")
 
-    start_new_thread(parsing, (HOST, PORT,))
+    #start_new_thread(parsing, (HOST, PORT,))
+
     while True:
         conn ,addr = s.accept()
         print("Connected to :"+  addr[0] + ":" + str(addr[1]))

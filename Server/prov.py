@@ -1,14 +1,15 @@
 import sys, os
 import xml.etree.ElementTree as ET # API for xml parsing
 import pysftp # this is API for ssh connection
+import paramiko # API for remote script execution
 from subprocess import call  # for executing the python client script
 
 
 filename="data.xml"
 pathname = os.path.dirname(sys.argv[0])
 full_pathname=os.path.abspath(pathname)
+ssh = paramiko.SSHClient()
 
-file_path_name=os.path.join(full_pathname,filename)
 
 try:
     send_script=os.path.join(full_pathname,"Send")
@@ -28,13 +29,12 @@ for child in root:
 
     # Check for errors in the xml
 
-    if "username" in child_attributes and "ip" in child_attributes and "port" in child_attributes and "password" in child_attributes and "mail"  in child_attributes:
+    if "usernme" in child_attributes and "ip" in child_attributes and "port" in child_attributes and "password" in child_attributes and "mail"  in child_attributes:
         user_name=child_attributes.get("username")
         ip=child_attributes.get("ip")
         port=child_attributes.get("port")
         password=child_attributes.get("password")
         user_mail=child_attributes.get("mail")
-        print(user_name,ip,port,password,user_mail)
         number_of_alerts=len(child)
 
 
@@ -42,19 +42,29 @@ for child in root:
 
         cinfo = {'host':ip, 'username':user_name, 'password':password, 'port':int(port) }
         try:
+            print("TEST")
             with pysftp.Connection(**cinfo) as sftp:
-
+                print("TEST")
                 # Check to see if there is a temp directory already
 
                 main_directory=sftp.listdir()
                 if not "temp" in main_directory:
                     sftp.mkdir('temp', mode=777) # Create directory
+                    print("TEST")
                     sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
-                    with sftp.cd('temp'):
-                        print(sftp.listdir())
-                        sftp.execute("python monitor.py 192.168.0.104 5570")
+
                 else:
                     sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
+
+            try: # Execute the script with paramiko
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(ip, username=user_name, password=password)
+                command="python temp/monitor.py " + HOST + " " + PORT
+                print("Executing the external script.........\")
+                ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("temp/monitor.py",get_pty=True)
+
+            except Exception:
+                print("Could not execute the script")
 
             if number_of_alerts > 0:
 
