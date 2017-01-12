@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import socket
 import sys, os
+import smtplib # For email
 from _thread import *
 import xml.etree.ElementTree as ET # API for xml parsing
 from simplecrypt import decrypt
@@ -34,6 +35,7 @@ def threded_clinet(conn, addr):
     data = conn.recv(1024)
 
     start_new_thread(decrypt_data, (data,addr,))
+
     if data:
         reply = "Server output: Data was received by the server!"
         conn.sendall(str.encode(reply))
@@ -92,12 +94,11 @@ def parsing( HOST, PORT):
                     if not "temp" in main_directory:
                         sftp.mkdir('temp', mode=777) # Create directory
                         sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
-                        try:
-                            err=sftp.excute("python asa.py")
-                            for i in err:
-                                print(i)
-                        except Exception:
-                            print("La dracu!")
+                        #try:
+                        #    err=sftp.excute("python asa.py")
+                        #    for i in err:
+                        #        print(i)
+                        #except Exception:
                     else:
                         sftp.put_r(send_script,'temp', preserve_mtime=True) # Copy the script
                         try:
@@ -105,20 +106,7 @@ def parsing( HOST, PORT):
                             for i in ad:
                                 print(i)
                         except Exception:
-                            print("La dracu!")
-                            print("La dracu!")
-
-
-                try: # Execute the script with paramiko
-                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    ssh.connect(ip, username=user_name, password=password)
-                    command="python monitor.py" + " " + HOST + " " + PORT
-                    print("Executing the external script!")
-                    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(command, get_pty=True)
-                    for line in ssh_stdout.read().splitlines():
-                        print(line)
-                except Exception:
-                    print("Could not execute the script")
+                            pass
 
                 # CHECK IF THERE ARE ALERTS
                 if number_of_alerts > 0:
@@ -135,6 +123,17 @@ def parsing( HOST, PORT):
                             print("The cpu limit is:",cpu_limit)
                         else:
                             print("There are no tests to be done!")
+                    sender = 'cristi26_gabor@yahoo.com'
+
+                    message = "From: From Person" + sender + "To:" + user_name + " " + user_mail + "\n" + " Subject: SMTP e-mail test " + " \nThis is a test e-mail message" + memory_limit + cpu_limit
+                    receiver=[user_mail]
+
+                    try:
+                        smtpObj = smtplib.SMTP('localhost')
+                        smtpObj.sendmail(sender, receiver, message)
+                        print("Successfully sent email")
+                    except SMTPException:
+                        print("Error: unable to send email")
                 else:
                     print("There are no alerts to take into consideration!")
 
@@ -169,7 +168,7 @@ def main():
     s.listen(100)
     print("Waiting for a connection....")
 
-    #start_new_thread(parsing, (HOST, PORT,))
+    start_new_thread(parsing, (HOST, PORT,))
 
     while True:
         conn ,addr = s.accept()
