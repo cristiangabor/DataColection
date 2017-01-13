@@ -91,14 +91,11 @@ def parse_decrypted_data(data_list):
         elif data_list[i] == "UPTIME":
             uptime = data_list[i+1]
 
-    print("\n\n"+ ip + "\n\n")
-    if ip and port and free_memory and percent_memory and total_memory and used_memory and available_memory and cpu and uptime:
-        print("Data is correct.")
-        insert_text(ip,port,free_memory,percent_memory,available_memory,total_memory,used_memory,cpu,uptime)
-        print("Data Entered Into DataBase!")
-    else:
-        print("Data received from the client is not good")
 
+    print("""ip: %s port: %s free_memory: %s percent_memory:
+    %s total_memory: %s used_memory:
+    %s available_memory: %s cpu: %s uptime: %s""" % (ip,port,free_memory,percent_memory,total_memory,used_memory,available_memory,cpu,uptime))
+    insert_text(str(ip), str(port),str(free_memory),str(percent_memory),str(available_memory),str(total_memory),str(used_memory),str(cpu),str(uptime))
 def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
