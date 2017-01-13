@@ -7,7 +7,6 @@ import smtplib # For email
 from _thread import *
 import xml.etree.ElementTree as ET # API for xml parsing
 from simplecrypt import decrypt
-import xml.etree.ElementTree as ET
 import pysftp # this is API for ssh connection
 from subprocess import call  # for executing the python client script
 
