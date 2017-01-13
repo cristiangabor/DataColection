@@ -71,6 +71,8 @@ def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAI
 
 def parse_decrypted_data(data_list):
     data_length = len(data_list)
+    # get the correct variables from the string
+
     for i in range(data_length):
         if data_list[i] == "CLIENT_IP:":
             ip = data_list[i+1]
@@ -91,9 +93,10 @@ def parse_decrypted_data(data_list):
         elif data_list[i] == "UPTIME":
             uptime = data_list[i+1]
 
-
+    # check the integrity of the values
     if ip and port and free_memory and percent_memory and total_memory and used_memory and available_memory and cpu and uptime:
         print("Correct data received!")
+        # if ok, enter values into database
         insert_text(str(ip), str(port),str(free_memory),str(percent_memory),str(available_memory),str(total_memory),str(used_memory),str(cpu),str(uptime))
         print("Data entered into database!")
     else:
@@ -109,7 +112,6 @@ def decrypt_data(data, addr):
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
         data_list = aditional_info.split()
-        print(data_list)
         parse_decrypted_data(data_list)
         f.write(str(aditional_info))
         f.close()
