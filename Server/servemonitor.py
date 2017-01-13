@@ -12,6 +12,7 @@ import pysftp # this is API for ssh connection
 from subprocess import call  # for executing the python client script
 
 
+# CREATE THE DATABASE
 
 def create_table(db_name,table_name,sql):
 	with sqlite3.connect(db_name) as db:
@@ -35,6 +36,9 @@ def create_table(db_name,table_name,sql):
 			cursor.execute(sql)
 			db.commit()
 
+
+# CREATE DATABASE - BUILD THE COLLONS
+
 def create_table_for_doc(db_name):
 
 	sql="""CREATE TABLE IF NOT exists INFORMATION(
@@ -52,6 +56,7 @@ def create_table_for_doc(db_name):
 
 	create_table(db_name,'INFORMATION',sql)
 
+# CREATE DATABASE - POPULATE THE DATABASE
 
 def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAILABLE, MEMORY_TOTAL,MEMORY_USED,CPU,UPTIME):
 
@@ -62,6 +67,7 @@ def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAI
 			cursor.execute(sql,data)
 			db.commit()
 
+# START THE DECRYPTION PROCESS
 
 def decrypt_data(data, addr):
 
@@ -73,6 +79,9 @@ def decrypt_data(data, addr):
         CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
+        aditional_info = aditional_info.split()
+        for i in aditional_info:
+            print(i)
         f.write(str(aditional_info))
         f.close()
         return(decrypted_data)
@@ -95,6 +104,7 @@ def threded_clinet(conn, addr):
         conn.sendall(str.endcode(reply))
     conn.close()
 
+# SENT MAIL TO THE SERVER OWNER
 
 def send_email_function(fromaddr,memory_limit,cpu_limit, gmail_password):
 
@@ -119,6 +129,8 @@ def send_email_function(fromaddr,memory_limit,cpu_limit, gmail_password):
     except:
         print("Failed to send mail. Check if the Gmail password is correct.")
 
+
+# PARSE THE XML DATA
 
 def parsing( HOST, PORT, GMAIL_PASSWORD):
 
@@ -207,6 +219,7 @@ def parsing( HOST, PORT, GMAIL_PASSWORD):
 
         counter +=1
 
+# MAIN
 
 def main():
 
@@ -242,7 +255,7 @@ def main():
     s.listen(100)
     print("Waiting for a connection....")
 
-    start_new_thread(parsing, (HOST, PORT,GMAIL_PASSWORD))
+#    start_new_thread(parsing, (HOST, PORT,GMAIL_PASSWORD))
 
     while True:
         conn ,addr = s.accept()
