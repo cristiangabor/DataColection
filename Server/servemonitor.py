@@ -69,6 +69,32 @@ def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAI
 
 # START THE DECRYPTION PROCESS
 
+def parse_decrypted_data(data_list):
+    data_length = len(data_list)
+    for i in range(data_length):
+        if data_list[i] == "CLIENT_IP:":
+            ip = data_list[i+1]
+        elif data_list[i] == "CLIENT_PORT:":
+            port = data_list[i+1]
+        elif data_list[i] == "MEMORY_FREE":
+            free_memory = data_list[i+1]
+        elif data_list[i] == "MEMORY_PERCENT":
+            percent_memory = data_list[i+1]
+        elif data_list[i] == "MEMORY_TOTAL":
+            total_memory == data_list[i+1]
+        elif data_list[i] == "MEMORY_USED":
+            used_memory = data_list[i+1]
+        elif data_list[i] == "MEMORY_AVAILABLE":
+            available_memory = data_list[i+1]
+        elif data_list[i] == "CPU":
+            cpu = data_list[i+1]
+        elif data_list[i] == "UPTIME":
+            uptime = data_list[i+1]
+
+    print("""ip: %s port: %s free_memory: %s percent_memory:
+    %s total_memory: %s used_memory:
+    %s available_memory: %s cpu: %s uptime: %s""" % (ip,port,free_memory,percent_memory,total_memory,used_memory,available_memory,cpu,uptime))
+        
 def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
@@ -79,9 +105,8 @@ def decrypt_data(data, addr):
         CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
-        aditional_info = aditional_info.split()
-        for i in aditional_info:
-            print(i)
+        data_list = aditional_info.split()
+        parse_decrypted_data(data_list)
         f.write(str(aditional_info))
         f.close()
         return(decrypted_data)
