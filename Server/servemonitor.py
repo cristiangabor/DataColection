@@ -91,6 +91,7 @@ def parse_decrypted_data(data_list):
         elif data_list[i] == "UPTIME":
             uptime = data_list[i+1]
 
+    print("\n\n"+ ip + "\n\n")
     if ip and port and free_memory and percent_memory and total_memory and used_memory and available_memory and cpu and uptime:
         print("Data is correct.")
         insert_text(ip,port,free_memory,percent_memory,available_memory,total_memory,used_memory,cpu,uptime)
