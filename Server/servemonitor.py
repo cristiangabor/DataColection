@@ -81,7 +81,7 @@ def parse_decrypted_data(data_list):
         elif data_list[i] == "MEMORY_PERCENT":
             percent_memory = data_list[i+1]
         elif data_list[i] == "MEMORY_TOTAL":
-            total_memory == data_list[i+1]
+            total_memory = data_list[i+1]
         elif data_list[i] == "MEMORY_USED":
             used_memory = data_list[i+1]
         elif data_list[i] == "MEMORY_AVAILABLE":
@@ -94,7 +94,7 @@ def parse_decrypted_data(data_list):
     print("""ip: %s port: %s free_memory: %s percent_memory:
     %s total_memory: %s used_memory:
     %s available_memory: %s cpu: %s uptime: %s""" % (ip,port,free_memory,percent_memory,total_memory,used_memory,available_memory,cpu,uptime))
-        
+
 def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
