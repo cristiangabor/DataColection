@@ -41,9 +41,11 @@ mem.percent }
 """Returns a list of floats representing the utilization as a percentage for each CPU. First element of the list refers to first CPU, second
 element to second CPU and so on. The order of the list is consistent across calls. """
 
-CPU=psutil.cpu_percent(interval=1, percpu=True)
-
-
+CPU_LIST=psutil.cpu_percent(interval=1, percpu=True)
+CPU=""
+for i in CPU_LIST:
+	CPU += str(i) + "/"
+print(CPU)
 # UPTIME
 """ Returns the uptime in seconds, or None if it can’t figure it out. """
 
