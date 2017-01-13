@@ -226,8 +226,8 @@ def main():
 
     # 1.Gets the local ip/ip over LAN.
 
-    #HOST =socket.gethostbyname(socket.gethostname())
-    HOST="192.168.0.102"
+    HOST =socket.gethostbyname(socket.gethostname())
+    #HOST="192.168.0.102"
     # 2.Use port no. above 1800 so it does not interfere with ports already in use.
 
     PORT =input ("Enter the PORT number (1 - 10,000)")
