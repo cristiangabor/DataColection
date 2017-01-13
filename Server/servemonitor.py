@@ -60,10 +60,10 @@ def create_table_for_doc(db_name):
 
 def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAILABLE, MEMORY_TOTAL,MEMORY_USED,CPU,UPTIME):
 
-		with sqlite3.connect('poze.db') as db:
+		with sqlite3.connect("client_data.db") as db:
 			cursor=db.cursor()
 			data=(popular.title(),stiintific,importanta,descriere,sqlite3.Binary(poza))
-			sql="INSERT INTO INFORMATION(Popular,Stiintific,Importanta,Descriere,Poza) values (?,?,?,?,?)"
+			sql="INSERT INTO INFORMATION(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAILABLE, MEMORY_TOTAL, MEMORY_USED, CPU, UPTIME) values (?,?,?,?,?,?,?,?,?)"
 			cursor.execute(sql,data)
 			db.commit()
 
@@ -91,21 +91,18 @@ def parse_decrypted_data(data_list):
         elif data_list[i] == "UPTIME":
             uptime = data_list[i+1]
 
-    print("""ip: %s port: %s free_memory: %s percent_memory:
-    %s total_memory: %s used_memory:
-    %s available_memory: %s cpu: %s uptime: %s""" % (ip,port,free_memory,percent_memory,total_memory,used_memory,available_memory,cpu,uptime))
-
+    insert_text(str(ip), str(port),str(free_memory),str(percent_memory),str(available_memory),str(total_memory),str(used_memory),str(cpu),str(uptime))
+    print("Data Entered Into DataBase!")
 def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
     if data:
         print("Decrypting the information")
         decrypted_data = decrypt('cris', data).decode('utf-8')
-        print(decrypted_data)
         CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
-        data_list = aditional_info.split()
+        data_list = aditional_info.split(" ")
         parse_decrypted_data(data_list)
         f.write(str(aditional_info))
         f.close()

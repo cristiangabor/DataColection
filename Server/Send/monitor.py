@@ -43,7 +43,7 @@ element to second CPU and so on. The order of the list is consistent across call
 
 CPU=psutil.cpu_percent(interval=1, percpu=True)
 
-
+print(CPU)
 # UPTIME
 """ Returns the uptime in seconds, or None if it can’t figure it out. """
 
