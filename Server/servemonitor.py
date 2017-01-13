@@ -105,7 +105,8 @@ def decrypt_data(data, addr):
         CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
         aditional_info +=str(decrypted_data)
-        data_list = aditional_info.split(" ")
+        data_list = aditional_info.split()
+        print(data_list)
         parse_decrypted_data(data_list)
         f.write(str(aditional_info))
         f.close()
