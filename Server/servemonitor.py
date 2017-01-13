@@ -93,12 +93,12 @@ def parse_decrypted_data(data_list):
 
 
     if ip and port and free_memory and percent_memory and total_memory and used_memory and available_memory and cpu and uptime:
-        prrint("Correct data received!")
+        print("Correct data received!")
         insert_text(str(ip), str(port),str(free_memory),str(percent_memory),str(available_memory),str(total_memory),str(used_memory),str(cpu),str(uptime))
         print("Data entered into database!")
     else:
         print("Data from the client si not correct!")
-        
+
 def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
