@@ -62,7 +62,7 @@ def insert_text(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAI
 
 		with sqlite3.connect("client_data.db") as db:
 			cursor=db.cursor()
-			data=(popular.title(),stiintific,importanta,descriere,sqlite3.Binary(poza))
+			data=(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAILABLE, MEMORY_TOTAL,MEMORY_USED,CPU,UPTIME)
 			sql="INSERT INTO INFORMATION(CLIENT_IP, CLIENT_PORT, MEMORY_FREE, MEMORY_PERCENT, MEMORY_AVAILABLE, MEMORY_TOTAL, MEMORY_USED, CPU, UPTIME) values (?,?,?,?,?,?,?,?,?)"
 			cursor.execute(sql,data)
 			db.commit()
