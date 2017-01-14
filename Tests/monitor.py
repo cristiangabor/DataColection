@@ -7,6 +7,12 @@ from uptime import uptime
 from simplecrypt import encrypt
 
 
+PASSWORD = 'cris'
+
+# CLIENT SOCKET - OPEN
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("Socket created...")
+
 def detect_uptime():
 	""" Returns the uptime in seconds, or None if it can’t figure it out. """
 
@@ -23,6 +29,7 @@ def detect_platform():
 		# The LOGS variable for windows will be implemented in the future
 	else:
 		print("The current platform is:",current_platform, " ATENTION! There will not be any Windows security event logs")
+
 	return(True)
 
 
@@ -33,8 +40,9 @@ def get_cpu():
 	CPU_LIST=psutil.cpu_percent(interval=1, percpu=True)
 	CPU=""
 	for i in CPU_LIST:
-		CPU += str(int(i)) + "/"
+		CPU += str(i) + "/"
 		CPU=str(CPU)
+
 	return(CPU)
 
 def get_memory_usage():
@@ -62,17 +70,18 @@ def transform_data(memory,cpu,uptime,logs=None):
 	for i in keys_list:
 		data_transformed += str(i) + " " + str(memory.get(i)) + " "
 
-	data_transformed += " " + "CPU"
-
-	for i in cpu:
-		data_transformed += " " + str(i)
+	data_transformed += " " + "CPU" + " " + cpu
 
 	data_transformed += " " + "UPTIME" + " " + str(uptime)
 
 	if logs:
-		data_transformed +=" " + "LOGS" + " "
+		data_transformed +=" " + "LOGS" + " " + str(logs)
+
+		# future development
+		'''
 		for i in logs:
 			data_transformed += i + " "
+        '''
 
 	return(data_transformed)
 
@@ -82,19 +91,25 @@ def encrypt_data(password, message):
 	return(ciphertext)
 
 
-def make_connection(client_socket,host, port):
+def make_connection(host, port):
 	# Enstablish the connection to the central server
+	try:
+		client_socket.connect((host,port))
 
-	client_socket.connect((host,port))
+	except Exception:
+		print("Error! Could not connect to the server! Hint: Verify if the server script is ON")
 
-def send_encrypted_data(client_socket,data):
 
+def send_encrypted_data(data):
 
-	client_socket.sendall(data)
-	reply = client_socket.recv(1024)
-	reply = reply.decode('utf-8')
-	print(reply)
-	return(reply)
+	try:
+		client_socket.sendall(data)
+		reply = client_socket.recv(1024)
+		reply = reply.decode('utf-8')
+		print(reply)
+		return(reply)
+	except Exception:
+		print("Error! Could not send the encrypted data! Hint: Verify if the server script is ON")
 
 def main(password):
 
@@ -104,9 +119,6 @@ def main(password):
 	# check if there are sufficient args*
 	HOST_IP, PORT = check_for_args(HOSTNAME)
 
-	# CLIENT SOCKET - OPEN
-	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	print("Socket created...")
 
 	# CPU
 	CPU = get_cpu()
@@ -128,12 +140,12 @@ def main(password):
 	data = transform_data(MEMORY, CPU, UPTIME, logs=LOGS)
 
 	if data: # Check to see if the data exists
-		make_connection(client_socket,HOST_IP,PORT)               # Enstablish the connection with the main server
+		make_connection(HOST_IP,PORT)               # Enstablish the connection with the main server
 		print("Encrypting data...")
-		data_encrypted=encrypt_data(PASSWORD,data) 				  # Encrypt the data
+		data_encrypted=encrypt_data(PASSWORD,data) 			      # Encrypt the data
 		if data_encrypted:
 			print("Sending data...")
-			send_encrypted_data(client_socket,data_encrypted)  # Send the encrpyted data over TCP
+			send_encrypted_data(data_encrypted)     # Send the encrpyted data over TCP
 		else:
 			print("Data not sent!")
 	else:
@@ -141,4 +153,4 @@ def main(password):
 
 
 
-main('cris')
+main(PASSWORD)
