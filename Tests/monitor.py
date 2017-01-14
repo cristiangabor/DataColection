@@ -7,8 +7,6 @@ from uptime import uptime
 from simplecrypt import encrypt
 
 
-PASSWORD = 'cris'
-
 def detect_uptime():
 	""" Returns the uptime in seconds, or None if it can’t figure it out. """
 
@@ -25,7 +23,6 @@ def detect_platform():
 		# The LOGS variable for windows will be implemented in the future
 	else:
 		print("The current platform is:",current_platform, " ATENTION! There will not be any Windows security event logs")
-
 	return(True)
 
 
@@ -36,9 +33,8 @@ def get_cpu():
 	CPU_LIST=psutil.cpu_percent(interval=1, percpu=True)
 	CPU=""
 	for i in CPU_LIST:
-		CPU += str(i) + "/"
+		CPU += str(int(i)) + "/"
 		CPU=str(CPU)
-
 	return(CPU)
 
 def get_memory_usage():
@@ -66,18 +62,17 @@ def transform_data(memory,cpu,uptime,logs=None):
 	for i in keys_list:
 		data_transformed += str(i) + " " + str(memory.get(i)) + " "
 
-	data_transformed += " " + "CPU" + " " + cpu
+	data_transformed += " " + "CPU"
+
+	for i in cpu:
+		data_transformed += " " + str(i)
 
 	data_transformed += " " + "UPTIME" + " " + str(uptime)
 
 	if logs:
-		data_transformed +=" " + "LOGS" + " " + str(logs)
-
-		# future development
-		'''
+		data_transformed +=" " + "LOGS" + " "
 		for i in logs:
 			data_transformed += i + " "
-        '''
 
 	return(data_transformed)
 
@@ -89,20 +84,17 @@ def encrypt_data(password, message):
 
 def make_connection(client_socket,host, port):
 	# Enstablish the connection to the central server
-	try:
-		client_socket.connect((host,port))
-	except Exception:
-		print("Error! Could not connect to the server! Hint: Verify if the server script is ON")
+
+	client_socket.connect((host,port))
+
 def send_encrypted_data(client_socket,data):
 
-	try:
-		client_socket.sendall(data)
-		reply = client_socket.recv(1024)
-		reply = reply.decode('utf-8')
-		print(reply)
-		return(reply)
-	except Exception:
-		print("Error! Could not send the encrypted data! Hint: Verify if the server script is ON")
+
+	client_socket.sendall(data)
+	reply = client_socket.recv(1024)
+	reply = reply.decode('utf-8')
+	print(reply)
+	return(reply)
 
 def main(password):
 
@@ -149,4 +141,4 @@ def main(password):
 
 
 
-main(PASSWORD)
+main('cris')

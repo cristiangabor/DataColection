@@ -105,7 +105,7 @@ def decrypt_data(data, addr):
 
     f = open("mydata.txt",'a+')
     if data:
-        print("Decrypting the information")
+        print("Decrypting received data....")
         decrypted_data = decrypt('cris', data).decode('utf-8')
         CLIENT_IP,CLIENT_PORT=addr[0],addr[1]
         aditional_info="\n" +"CLIENT_IP: " + str(CLIENT_IP) + " " + "CLIENT_PORT: " + str(CLIENT_PORT) + " "
